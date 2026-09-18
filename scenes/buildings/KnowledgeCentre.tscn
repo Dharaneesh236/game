@@ -1,0 +1,178 @@
+[gd_scene format=3 uid="uid://k7m3x1q8v4w9z"]
+
+[ext_resource type="Script" path="res://scripts/buildings/knowledge_centre.gd" id="1_knowledge"]
+[ext_resource type="PackedScene" path="res://scenes/robots/Tiko.tscn" id="2_tiko"]
+[ext_resource type="PackedScene" path="res://scenes/objects/SignalNode.tscn" id="3_node"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Gate.tscn" id="4_gate"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="5_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/LevelTransition.tscn" id="6_trans"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ElectricBarrier.tscn" id="7_barrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/OpticalBarrier.tscn" id="8_optbarrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/UnstableMachine.tscn" id="9_unstable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.06, 0.08, 0.12, 1.0)
+metallic = 0.7
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_Server"]
+albedo_color = Color(0.12, 0.15, 0.22, 1.0)
+metallic = 0.8
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.0, 0.5, 0.9, 1.0)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_FallenServer"]
+albedo_color = Color(0.2, 0.15, 0.12, 1.0)
+metallic = 0.8
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_Floor"]
+material = SubResource("Mat_Floor")
+size = Vector3(40, 0.5, 46)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Floor"]
+size = Vector3(40, 0.5, 46)
+
+
+[sub_resource type="BoxMesh" id="BoxMesh_ServerRack"]
+material = SubResource("Mat_Server")
+size = Vector3(2.5, 5.0, 1.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ServerRack"]
+size = Vector3(2.5, 5.0, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Obstacle"]
+material = SubResource("Mat_FallenServer")
+size = Vector3(5.0, 2.2, 1.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Obstacle"]
+size = Vector3(5.0, 2.2, 1.8)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.8
+
+[node name="KnowledgeCentre" type="Node3D"]
+script = ExtResource("1_knowledge")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_Floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_Floor")
+
+[node name="ServerRacks" type="Node3D" parent="."]
+
+[node name="Rack1" type="StaticBody3D" parent="ServerRacks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.5, -8)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ServerRacks/Rack1"]
+mesh = SubResource("BoxMesh_ServerRack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ServerRacks/Rack1"]
+shape = SubResource("BoxShape3D_ServerRack")
+
+[node name="Rack2" type="StaticBody3D" parent="ServerRacks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.5, 4)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ServerRacks/Rack2"]
+mesh = SubResource("BoxMesh_ServerRack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ServerRacks/Rack2"]
+shape = SubResource("BoxShape3D_ServerRack")
+
+[node name="Rack3" type="StaticBody3D" parent="ServerRacks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.5, -8)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ServerRacks/Rack3"]
+mesh = SubResource("BoxMesh_ServerRack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ServerRacks/Rack3"]
+shape = SubResource("BoxShape3D_ServerRack")
+
+[node name="Rack4" type="StaticBody3D" parent="ServerRacks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.5, 4)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ServerRacks/Rack4"]
+mesh = SubResource("BoxMesh_ServerRack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ServerRacks/Rack4"]
+shape = SubResource("BoxShape3D_ServerRack")
+
+[node name="HeavyServerObstacle" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -6)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HeavyServerObstacle"]
+mesh = SubResource("BoxMesh_Obstacle")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HeavyServerObstacle"]
+shape = SubResource("BoxShape3D_Obstacle")
+
+[node name="Interactable" type="Area3D" parent="HeavyServerObstacle"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("5_interactable")
+prompt_message = "[E] Command Tiko to Push Heavy Server Rack"
+action_type = "command_tiko"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HeavyServerObstacle/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="Tiko" parent="." instance=ExtResource("2_tiko")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 8)
+
+[node name="SignalNodeA" parent="." instance=ExtResource("3_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -14)
+node_identifier = "Alpha"
+light_color = Color(0, 0.8, 1, 1)
+
+[node name="SignalNodeB" parent="." instance=ExtResource("3_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
+node_identifier = "Beta"
+light_color = Color(0.2, 1, 0.5, 1)
+
+[node name="SignalNodeC" parent="." instance=ExtResource("3_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -14)
+node_identifier = "Gamma"
+light_color = Color(1, 0.85, 0.2, 1)
+
+[node name="ExitGate" parent="." instance=ExtResource("4_gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -17.5)
+open_distance = 2.8
+
+[node name="LevelTransition" parent="." instance=ExtResource("6_trans")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.5)
+target_building = 2
+
+
+[node name="Lighting" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+light_color = Color(0.2, 0.6, 1, 1)
+light_energy = 2.0
+omni_range = 22.0
+
+[node name="ElectricBarrier" parent="." instance=ExtResource("7_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -2)
+
+[node name="OpticalBarrier" parent="." instance=ExtResource("8_optbarrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -2)
+
+[node name="CoolingTurbine" parent="." instance=ExtResource("9_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+machine_name = "Knowledge Archive Coolant Rotor"

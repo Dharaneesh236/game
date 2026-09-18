@@ -1,0 +1,496 @@
+[gd_scene format=3 uid="uid://c8m2v5q1w9k4x"]
+
+[ext_resource type="Script" path="res://scripts/buildings/testing_arena.gd" id="1_arena"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ElectricBarrier.tscn" id="3_barrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/OpticalBarrier.tscn" id="4_optbarrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/UnstableMachine.tscn" id="5_unstable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_ArenaFloor"]
+albedo_color = Color(0.03, 0.05, 0.09, 1.0)
+metallic = 0.92
+roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="Mat_Tower"]
+albedo_color = Color(0.08, 0.12, 0.2, 1.0)
+metallic = 0.95
+roughness = 0.12
+
+[sub_resource type="StandardMaterial3D" id="Mat_BeamInner"]
+albedo_color = Color(0.85, 1.0, 1.0, 0.95)
+emission_enabled = true
+emission = Color(0.2, 0.95, 1.0, 1.0)
+emission_energy_multiplier = 8.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_BeamOuter"]
+transparency = 1
+albedo_color = Color(0.0, 0.8, 1.0, 0.35)
+emission_enabled = true
+emission = Color(0.0, 0.8, 1.0, 1.0)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_SolarBeam"]
+albedo_color = Color(1.0, 0.88, 0.2, 0.95)
+emission_enabled = true
+emission = Color(1.0, 0.85, 0.15, 1.0)
+emission_energy_multiplier = 7.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_LogicBeam"]
+albedo_color = Color(1.0, 0.65, 0.1, 0.95)
+emission_enabled = true
+emission = Color(1.0, 0.55, 0.05, 1.0)
+emission_energy_multiplier = 7.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_DecryptionBeam"]
+albedo_color = Color(0.95, 0.2, 0.95, 0.95)
+emission_enabled = true
+emission = Color(0.9, 0.15, 0.95, 1.0)
+emission_energy_multiplier = 7.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_KineticBeam"]
+albedo_color = Color(0.15, 1.0, 0.45, 0.95)
+emission_enabled = true
+emission = Color(0.1, 0.95, 0.35, 1.0)
+emission_energy_multiplier = 7.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_PylonColumn"]
+albedo_color = Color(0.12, 0.16, 0.24, 1.0)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_Shockwave"]
+transparency = 1
+albedo_color = Color(0.1, 1.0, 0.9, 0.7)
+emission_enabled = true
+emission = Color(0.1, 1.0, 0.9, 1.0)
+emission_energy_multiplier = 6.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_FloorCircuits"]
+albedo_color = Color(0.0, 0.8, 1.0, 0.6)
+emission_enabled = true
+emission = Color(0.0, 0.8, 1.0, 1.0)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_Console"]
+albedo_color = Color(0.05, 0.25, 0.4, 1.0)
+metallic = 0.85
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.0, 0.9, 1.0, 1.0)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Arena"]
+material = SubResource("Mat_ArenaFloor")
+top_radius = 32.0
+bottom_radius = 32.0
+height = 0.5
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_Arena"]
+height = 0.5
+radius = 32.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_TowerSpire"]
+material = SubResource("Mat_Tower")
+top_radius = 1.2
+bottom_radius = 5.0
+height = 42.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_Tower"]
+height = 42.0
+radius = 5.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_BeamInner"]
+material = SubResource("Mat_BeamInner")
+top_radius = 2.2
+bottom_radius = 2.2
+height = 140.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_BeamOuter"]
+material = SubResource("Mat_BeamOuter")
+top_radius = 4.8
+bottom_radius = 4.8
+height = 145.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Pylon"]
+material = SubResource("Mat_PylonColumn")
+top_radius = 0.65
+bottom_radius = 1.0
+height = 4.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_HBeam"]
+top_radius = 0.28
+bottom_radius = 0.28
+height = 12.5
+
+[sub_resource type="TorusMesh" id="TorusMesh_Shockwave"]
+material = SubResource("Mat_Shockwave")
+inner_radius = 0.8
+outer_radius = 1.4
+
+[sub_resource type="TorusMesh" id="TorusMesh_FloorCircuits1"]
+material = SubResource("Mat_FloorCircuits")
+inner_radius = 8.8
+outer_radius = 9.1
+
+[sub_resource type="TorusMesh" id="TorusMesh_FloorCircuits2"]
+material = SubResource("Mat_FloorCircuits")
+inner_radius = 15.8
+outer_radius = 16.1
+
+[sub_resource type="BoxMesh" id="BoxMesh_Console"]
+material = SubResource("Mat_Console")
+size = Vector3(3.5, 1.4, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Console"]
+size = Vector3(3.5, 1.4, 1.6)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_win"]
+bg_color = Color(0.015, 0.035, 0.075, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1.0, 0.8, 0.2, 1.0)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0, 0.8, 1, 0.3)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Card"]
+bg_color = Color(0.04, 0.09, 0.16, 0.88)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0, 0.8, 1.0, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="TestingArena" type="Node3D"]
+script = ExtResource("1_arena")
+
+[node name="Platform" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Platform"]
+mesh = SubResource("CylinderMesh_Arena")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Platform"]
+shape = SubResource("CylinderShape3D_Arena")
+
+[node name="FloorCircuits" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -16)
+
+[node name="Ring1" type="MeshInstance3D" parent="FloorCircuits"]
+mesh = SubResource("TorusMesh_FloorCircuits1")
+
+[node name="Ring2" type="MeshInstance3D" parent="FloorCircuits"]
+mesh = SubResource("TorusMesh_FloorCircuits2")
+
+[node name="CentralSignalTower" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 21, -16)
+collision_layer = 4
+collision_mask = 3
+
+[node name="SpireMesh" type="MeshInstance3D" parent="CentralSignalTower"]
+mesh = SubResource("CylinderMesh_TowerSpire")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CentralSignalTower"]
+shape = SubResource("CylinderShape3D_Tower")
+
+[node name="SkyBeam" type="MeshInstance3D" parent="CentralSignalTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 0)
+mesh = SubResource("CylinderMesh_BeamInner")
+
+[node name="SkyBeamOuter" type="MeshInstance3D" parent="CentralSignalTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 72, 0)
+mesh = SubResource("CylinderMesh_BeamOuter")
+
+[node name="TowerLight" type="OmniLight3D" parent="CentralSignalTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0)
+light_color = Color(0, 0.95, 1, 1)
+light_energy = 5.0
+omni_range = 55.0
+
+[node name="ShockwaveRing" type="MeshInstance3D" parent="CentralSignalTower"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20.9, 0)
+visible = false
+mesh = SubResource("TorusMesh_Shockwave")
+
+[node name="RelayPylonSouth" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
+
+[node name="PylonMesh" type="MeshInstance3D" parent="RelayPylonSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+mesh = SubResource("CylinderMesh_Pylon")
+
+[node name="BeamMesh" type="MeshInstance3D" parent="RelayPylonSouth"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 5.0, -4.5)
+visible = false
+material_override = SubResource("Mat_SolarBeam")
+mesh = SubResource("CylinderMesh_HBeam")
+
+[node name="PylonLight" type="OmniLight3D" parent="RelayPylonSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+light_color = Color(1, 0.85, 0.15, 1)
+light_energy = 0.0
+omni_range = 14.0
+
+[node name="StationMarker" type="Marker3D" parent="RelayPylonSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.8)
+
+[node name="RelayPylonEast" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -16)
+
+[node name="PylonMesh" type="MeshInstance3D" parent="RelayPylonEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+mesh = SubResource("CylinderMesh_Pylon")
+
+[node name="BeamMesh" type="MeshInstance3D" parent="RelayPylonEast"]
+transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, -4.5, 5.0, 0)
+visible = false
+material_override = SubResource("Mat_LogicBeam")
+mesh = SubResource("CylinderMesh_HBeam")
+
+[node name="PylonLight" type="OmniLight3D" parent="RelayPylonEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+light_color = Color(1, 0.55, 0.05, 1)
+light_energy = 0.0
+omni_range = 14.0
+
+[node name="StationMarker" type="Marker3D" parent="RelayPylonEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0, 0)
+
+[node name="RelayPylonNorth" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)
+
+[node name="PylonMesh" type="MeshInstance3D" parent="RelayPylonNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+mesh = SubResource("CylinderMesh_Pylon")
+
+[node name="BeamMesh" type="MeshInstance3D" parent="RelayPylonNorth"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 5.0, 4.5)
+visible = false
+material_override = SubResource("Mat_DecryptionBeam")
+mesh = SubResource("CylinderMesh_HBeam")
+
+[node name="PylonLight" type="OmniLight3D" parent="RelayPylonNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+light_color = Color(0.9, 0.15, 0.95, 1)
+light_energy = 0.0
+omni_range = 14.0
+
+[node name="StationMarker" type="Marker3D" parent="RelayPylonNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8)
+
+[node name="RelayPylonWest" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, -16)
+
+[node name="PylonMesh" type="MeshInstance3D" parent="RelayPylonWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1, 0)
+mesh = SubResource("CylinderMesh_Pylon")
+
+[node name="BeamMesh" type="MeshInstance3D" parent="RelayPylonWest"]
+transform = Transform3D(0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0, 1, 4.5, 5.0, 0)
+visible = false
+material_override = SubResource("Mat_KineticBeam")
+mesh = SubResource("CylinderMesh_HBeam")
+
+[node name="PylonLight" type="OmniLight3D" parent="RelayPylonWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+light_color = Color(0.1, 0.95, 0.35, 1)
+light_energy = 0.0
+omni_range = 14.0
+
+[node name="StationMarker" type="Marker3D" parent="RelayPylonWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0, 0)
+
+[node name="MasterConsole" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -2)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MasterConsole"]
+mesh = SubResource("BoxMesh_Console")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MasterConsole"]
+shape = SubResource("BoxShape3D_Console")
+
+[node name="Interactable" type="Area3D" parent="MasterConsole"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.2)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] ACTIVATE THE LAST SIGNAL"
+action_type = "terminal"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MasterConsole/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="ElectricBarrierL" parent="." instance=ExtResource("3_barrier")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -12, 0, -4)
+
+[node name="OpticalBarrierR" parent="." instance=ExtResource("4_optbarrier")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 12, 0, -4)
+
+[node name="HarmonicTurbine" parent="." instance=ExtResource("5_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+machine_name = "Signal Frequency Regulator Rotor"
+
+[node name="VictoryUI" type="CanvasLayer" parent="."]
+layer = 10
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="VictoryUI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.02, 0.06, 0.75)
+
+[node name="Panel" type="Panel" parent="VictoryUI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -290.0
+offset_right = 440.0
+offset_bottom = 290.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_win")
+
+[node name="VBox" type="VBoxContainer" parent="VictoryUI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 22.0
+offset_right = -32.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="Label" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 28
+text = "★ ROBOVERSE: THE LAST SIGNAL ★"
+horizontal_alignment = 1
+
+[node name="SubHeader" type="Label" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "100% GALAXY BROADCAST SYNCHRONIZED"
+horizontal_alignment = 1
+
+[node name="Sep1" type="HSeparator" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+
+[node name="FacilitiesGrid" type="GridContainer" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="F1Card" type="PanelContainer" parent="VictoryUI/Panel/VBox/FacilitiesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="F1Label" type="Label" parent="VictoryUI/Panel/VBox/FacilitiesGrid/F1Card"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = " [✓] 1. Welcome Centre: Power Restored"
+
+[node name="F2Card" type="PanelContainer" parent="VictoryUI/Panel/VBox/FacilitiesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="F2Label" type="Label" parent="VictoryUI/Panel/VBox/FacilitiesGrid/F2Card"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = " [✓] 2. Knowledge Centre: Comm Route Linked"
+
+[node name="F3Card" type="PanelContainer" parent="VictoryUI/Panel/VBox/FacilitiesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="F3Label" type="Label" parent="VictoryUI/Panel/VBox/FacilitiesGrid/F3Card"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = " [✓] 3. Coding & AI Hub: Neural Matrix Online"
+
+[node name="F4Card" type="PanelContainer" parent="VictoryUI/Panel/VBox/FacilitiesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="F4Label" type="Label" parent="VictoryUI/Panel/VBox/FacilitiesGrid/F4Card"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.6, 1)
+theme_override_font_sizes/font_size = 13
+text = " [✓] 4. Innovation Tower: Security Cleared"
+
+[node name="F5Card" type="PanelContainer" parent="VictoryUI/Panel/VBox/FacilitiesGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Card")
+
+[node name="F5Label" type="Label" parent="VictoryUI/Panel/VBox/FacilitiesGrid/F5Card"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = " [✓] 5. Testing Arena: Spire Broadcasting"
+
+[node name="Sep2" type="HSeparator" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+
+[node name="RobotsStatus" type="Label" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "✦ COMPANION HONORS ✦\n• Petalo (Solar Beacon)  • Quacky (Logic Scout)  • Tolly (Security Hacker)  • Tiko (Hydraulic Titan)"
+horizontal_alignment = 1
+
+[node name="Congratulations" type="Label" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.85, 1)
+theme_override_font_sizes/font_size = 14
+text = "All facilities restored. The RoboVerse has awakened!"
+horizontal_alignment = 1
+
+[node name="ButtonHBox" type="HBoxContainer" parent="VictoryUI/Panel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 24
+
+[node name="ReplayButton" type="Button" parent="VictoryUI/Panel/VBox/ButtonHBox"]
+custom_minimum_size = Vector2(220, 38)
+layout_mode = 2
+text = "[R] REPLAY CLIMAX"
+
+[node name="FreeRoamButton" type="Button" parent="VictoryUI/Panel/VBox/ButtonHBox"]
+custom_minimum_size = Vector2(220, 38)
+layout_mode = 2
+text = "[ESC] FREE ROAM ARENA"

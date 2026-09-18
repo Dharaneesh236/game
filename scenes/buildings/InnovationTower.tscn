@@ -1,0 +1,226 @@
+[gd_scene format=3 uid="uid://d1m9x8v3q7w2k"]
+
+[ext_resource type="Script" path="res://scripts/buildings/innovation_tower.gd" id="1_tower"]
+[ext_resource type="PackedScene" path="res://scenes/robots/Tolly.tscn" id="2_tolly"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Gate.tscn" id="3_gate"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="4_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/LevelTransition.tscn" id="5_trans"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ElectricBarrier.tscn" id="6_barrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/OpticalBarrier.tscn" id="7_optbarrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/UnstableMachine.tscn" id="8_unstable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.08, 0.1, 0.15, 1.0)
+metallic = 0.8
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_Deck"]
+albedo_color = Color(0.12, 0.18, 0.25, 1.0)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_Elevator"]
+albedo_color = Color(0.0, 0.6, 0.8, 1.0)
+emission_enabled = true
+emission = Color(0, 0.7, 0.9, 1)
+emission_energy_multiplier = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_Floor"]
+material = SubResource("Mat_Floor")
+size = Vector3(42, 0.5, 42)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Floor"]
+size = Vector3(42, 0.5, 42)
+
+[sub_resource type="BoxMesh" id="BoxMesh_UpperDeck"]
+material = SubResource("Mat_Deck")
+size = Vector3(18, 0.4, 22)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_UpperDeck"]
+size = Vector3(18, 0.4, 22)
+
+
+[sub_resource type="BoxMesh" id="BoxMesh_Elevator"]
+material = SubResource("Mat_Elevator")
+size = Vector3(4, 0.3, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Elevator"]
+size = Vector3(4, 0.3, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Bridge"]
+material = SubResource("Mat_Deck")
+size = Vector3(10, 0.3, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Bridge"]
+size = Vector3(10, 0.3, 3)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_InteractLarge"]
+radius = 3.6
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Console"]
+material = SubResource("Mat_Deck")
+top_radius = 0.2
+bottom_radius = 0.3
+height = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_ConsoleTop"]
+material = SubResource("Mat_Elevator")
+size = Vector3(0.6, 0.2, 0.5)
+
+[node name="InnovationTower" type="Node3D"]
+script = ExtResource("1_tower")
+
+[node name="GroundFloor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GroundFloor"]
+mesh = SubResource("BoxMesh_Floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundFloor"]
+shape = SubResource("BoxShape3D_Floor")
+
+[node name="UpperDeck" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0, -12)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="UpperDeck"]
+mesh = SubResource("BoxMesh_UpperDeck")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="UpperDeck"]
+shape = SubResource("BoxShape3D_UpperDeck")
+
+[node name="ElevatorPlatform" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.2, -4)
+collision_layer = 1
+collision_mask = 7
+sync_to_physics = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ElevatorPlatform"]
+mesh = SubResource("BoxMesh_Elevator")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevatorPlatform"]
+shape = SubResource("BoxShape3D_Elevator")
+
+[node name="Interactable" type="Area3D" parent="ElevatorPlatform"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Ascend to Upper Catwalk"
+action_type = "elevator"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ElevatorPlatform/Interactable"]
+shape = SubResource("SphereShape3D_InteractLarge")
+
+[node name="GroundCallTerminal" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.0, -1.2)
+
+[node name="Pillar" type="MeshInstance3D" parent="GroundCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_Console")
+
+[node name="ConsoleTop" type="MeshInstance3D" parent="GroundCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+mesh = SubResource("BoxMesh_ConsoleTop")
+
+[node name="StatusLight" type="OmniLight3D" parent="GroundCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+light_color = Color(0, 0.85, 1, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="Interactable" type="Area3D" parent="GroundCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Call Elevator Down"
+action_type = "call_elevator_down"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GroundCallTerminal/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="UpperCallTerminal" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 6.0, -4.0)
+
+[node name="Pillar" type="MeshInstance3D" parent="UpperCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_Console")
+
+[node name="ConsoleTop" type="MeshInstance3D" parent="UpperCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+mesh = SubResource("BoxMesh_ConsoleTop")
+
+[node name="StatusLight" type="OmniLight3D" parent="UpperCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+light_color = Color(0, 0.85, 1, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="Interactable" type="Area3D" parent="UpperCallTerminal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Call Elevator Up"
+action_type = "call_elevator_up"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="UpperCallTerminal/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="CatwalkBridge" type="AnimatableBody3D" parent="."]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 8, 6.0, -6)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CatwalkBridge"]
+mesh = SubResource("BoxMesh_Bridge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatwalkBridge"]
+shape = SubResource("BoxShape3D_Bridge")
+
+[node name="Interactable" type="Area3D" parent="CatwalkBridge"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Command Tiko to Align Bridge"
+action_type = "command_tiko"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatwalkBridge/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="Tolly" parent="." instance=ExtResource("2_tolly")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 4)
+
+[node name="UpperSecurityGate" parent="." instance=ExtResource("3_gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0, -17.5)
+is_locked = true
+requires_tolly = true
+open_distance = 2.8
+
+[node name="LevelTransition" parent="." instance=ExtResource("5_trans")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0, -20.5)
+target_building = 4
+
+
+[node name="TowerLighting" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+light_color = Color(0.8, 0.3, 0.9, 1)
+light_energy = 2.5
+omni_range = 28.0
+
+[node name="OpticalBarrier" parent="." instance=ExtResource("7_optbarrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -2)
+
+[node name="UpperElectricBarrier" parent="." instance=ExtResource("6_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0, -10)
+
+[node name="TowerLiftHydraulics" parent="." instance=ExtResource("8_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 2)
+machine_name = "Tower Lift Secondary Regulator"

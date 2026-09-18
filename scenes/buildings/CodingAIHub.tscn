@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://c5m8x2v1q9w3k"]
+
+[ext_resource type="Script" path="res://scripts/buildings/coding_ai_hub.gd" id="1_ai_hub"]
+[ext_resource type="PackedScene" path="res://scenes/robots/Quacky.tscn" id="2_quacky"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Gate.tscn" id="3_gate"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="4_interactable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/LevelTransition.tscn" id="5_trans"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ElectricBarrier.tscn" id="6_barrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/OpticalBarrier.tscn" id="7_optbarrier"]
+[ext_resource type="PackedScene" path="res://scenes/objects/UnstableMachine.tscn" id="8_unstable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.05, 0.08, 0.12, 1.0)
+metallic = 0.8
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_Mainframe"]
+albedo_color = Color(0.1, 0.25, 0.35, 1.0)
+metallic = 0.85
+roughness = 0.2
+emission_enabled = true
+emission = Color(0, 0.8, 1, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_Duct"]
+albedo_color = Color(0.2, 0.22, 0.25, 1.0)
+metallic = 0.9
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_Floor"]
+material = SubResource("Mat_Floor")
+size = Vector3(38, 0.5, 44)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Floor"]
+size = Vector3(38, 0.5, 44)
+
+
+[sub_resource type="BoxMesh" id="BoxMesh_Mainframe"]
+material = SubResource("Mat_Mainframe")
+size = Vector3(4, 5, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Mainframe"]
+size = Vector3(4, 5, 2.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Duct"]
+material = SubResource("Mat_Duct")
+size = Vector3(8, 1.0, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Duct"]
+size = Vector3(8, 1.0, 3)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.4
+
+[node name="CodingAIHub" type="Node3D"]
+script = ExtResource("1_ai_hub")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_Floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_Floor")
+
+[node name="AIMainframe" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -8)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIMainframe"]
+mesh = SubResource("BoxMesh_Mainframe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIMainframe"]
+shape = SubResource("BoxShape3D_Mainframe")
+
+[node name="Interactable" type="Area3D" parent="AIMainframe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.2, 1.8)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Insert Core & Reboot AI Network"
+action_type = "terminal"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIMainframe/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="MaintenanceDuct" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.5, 4)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MaintenanceDuct"]
+mesh = SubResource("BoxMesh_Duct")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MaintenanceDuct"]
+shape = SubResource("BoxShape3D_Duct")
+
+[node name="Interactable" type="Area3D" parent="MaintenanceDuct"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 0.2, 0)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("4_interactable")
+prompt_message = "[E] Command Quacky to Scout Duct"
+action_type = "command_quacky"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MaintenanceDuct/Interactable"]
+shape = SubResource("SphereShape3D_Interact")
+
+[node name="Quacky" parent="." instance=ExtResource("2_quacky")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 6)
+
+[node name="ExitGate" parent="." instance=ExtResource("3_gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16.5)
+open_distance = 2.8
+
+[node name="LevelTransition" parent="." instance=ExtResource("5_trans")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.5)
+target_building = 3
+
+
+[node name="AtmosphereLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+light_color = Color(0, 0.8, 1, 1)
+light_energy = 2.4
+omni_range = 24.0
+
+[node name="OpticalBarrier" parent="." instance=ExtResource("7_optbarrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="ElectricBarrier" parent="." instance=ExtResource("6_barrier")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -10, 0, 2)
+
+[node name="SubstationTurbine" parent="." instance=ExtResource("8_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -6)
+machine_name = "AI Mainframe Substation Rotor"

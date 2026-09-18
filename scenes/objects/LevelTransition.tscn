@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://t7m1x4v9q2w8z"]
+
+[ext_resource type="Script" path="res://scripts/objects/level_transition.gd" id="1_trans"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Trans"]
+size = Vector3(5.0, 4.0, 3.0)
+
+[sub_resource type="StandardMaterial3D" id="Mat_PortalBeam"]
+albedo_color = Color(0, 0.9, 1, 0.4)
+emission_enabled = true
+emission = Color(0, 0.9, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_Pad"]
+material = SubResource("Mat_PortalBeam")
+size = Vector3(4.8, 0.1, 2.8)
+
+[node name="LevelTransition" type="Area3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_trans")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, 0)
+shape = SubResource("BoxShape3D_Trans")
+
+[node name="PortalPad" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("BoxMesh_Pad")
+
+[node name="PortalLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+light_color = Color(0, 0.9, 1, 1)
+light_energy = 2.0
+omni_range = 5.0

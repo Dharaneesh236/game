@@ -1,0 +1,177 @@
+[gd_scene format=3 uid="uid://d2k4m9v7x5w1n"]
+
+[ext_resource type="Script" path="res://scripts/robots/quacky.gd" id="1_quacky"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_quacky"]
+size = Vector3(1.2, 0.75, 1.1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_WhitePaper"]
+albedo_color = Color(0.95, 0.94, 0.92, 1.0)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_OrangeEdge"]
+albedo_color = Color(0.95, 0.48, 0.08, 1.0)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_BlackEyes"]
+albedo_color = Color(0.08, 0.08, 0.08, 1.0)
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_ToyRed"]
+albedo_color = Color(0.85, 0.15, 0.12, 1.0)
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Mat_ToyYellow"]
+albedo_color = Color(1.0, 0.8, 0.1, 1.0)
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Mat_ToyGreen"]
+albedo_color = Color(0.18, 0.72, 0.22, 1.0)
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Mat_CarriedCore"]
+albedo_color = Color(0.1, 0.95, 0.8, 1.0)
+emission_enabled = true
+emission = Color(0.1, 0.95, 0.8, 1.0)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_Body"]
+material = SubResource("Mat_WhitePaper")
+size = Vector3(0.75, 0.25, 0.7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_BodyTrim"]
+material = SubResource("Mat_OrangeEdge")
+size = Vector3(0.77, 0.03, 0.72)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Neck"]
+material = SubResource("Mat_WhitePaper")
+size = Vector3(0.18, 0.22, 0.18)
+
+[sub_resource type="PrismMesh" id="PrismMesh_Head"]
+material = SubResource("Mat_WhitePaper")
+left_to_right = 0.15
+size = Vector3(0.42, 0.36, 0.48)
+
+[sub_resource type="SphereMesh" id="SphereMesh_Eye"]
+material = SubResource("Mat_BlackEyes")
+radius = 0.032
+height = 0.064
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_RedBar"]
+material = SubResource("Mat_ToyRed")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.28
+
+[sub_resource type="SphereMesh" id="SphereMesh_YellowJoint"]
+material = SubResource("Mat_ToyYellow")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="BoxMesh" id="BoxMesh_GreenCross"]
+material = SubResource("Mat_ToyGreen")
+size = Vector3(0.14, 0.04, 0.14)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_CoreItem"]
+material = SubResource("Mat_CarriedCore")
+top_radius = 0.08
+bottom_radius = 0.08
+height = 0.25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.0
+
+[node name="Quacky" type="CharacterBody3D" groups=["robots"]]
+collision_layer = 1
+collision_mask = 7
+script = ExtResource("1_quacky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+shape = SubResource("BoxShape3D_quacky")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+
+[node name="Chassis" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0.05)
+mesh = SubResource("BoxMesh_Body")
+
+[node name="ChassisTrim" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31, 0.05)
+mesh = SubResource("BoxMesh_BodyTrim")
+
+[node name="Neck" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36, -0.15)
+mesh = SubResource("BoxMesh_Neck")
+
+[node name="Head" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0.55, -0.2)
+mesh = SubResource("PrismMesh_Head")
+
+[node name="EyeL" type="MeshInstance3D" parent="VisualRoot/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16, 0.05, -0.06)
+mesh = SubResource("SphereMesh_Eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="VisualRoot/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16, 0.05, -0.06)
+mesh = SubResource("SphereMesh_Eye")
+
+[node name="LimbLeft" type="Node3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.16, 0)
+
+[node name="RedBarL" type="MeshInstance3D" parent="VisualRoot/LimbLeft"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.1, 0, 0)
+mesh = SubResource("CylinderMesh_RedBar")
+
+[node name="YellowJointL" type="MeshInstance3D" parent="VisualRoot/LimbLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, 0)
+mesh = SubResource("SphereMesh_YellowJoint")
+
+[node name="GreenCrossL" type="MeshInstance3D" parent="VisualRoot/LimbLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0, 0)
+mesh = SubResource("BoxMesh_GreenCross")
+
+[node name="LimbRight" type="Node3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.16, 0)
+
+[node name="RedBarR" type="MeshInstance3D" parent="VisualRoot/LimbRight"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.1, 0, 0)
+mesh = SubResource("CylinderMesh_RedBar")
+
+[node name="YellowJointR" type="MeshInstance3D" parent="VisualRoot/LimbRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0, 0)
+mesh = SubResource("SphereMesh_YellowJoint")
+
+[node name="GreenCrossR" type="MeshInstance3D" parent="VisualRoot/LimbRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0, 0)
+mesh = SubResource("BoxMesh_GreenCross")
+
+[node name="StatusLight" type="OmniLight3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+light_color = Color(1.0, 0.8, 0.2, 1)
+light_energy = 1.8
+omni_range = 5.0
+
+[node name="CarryingSlot" type="Node3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.15)
+visible = false
+
+[node name="CarriedModule" type="MeshInstance3D" parent="VisualRoot/CarryingSlot"]
+mesh = SubResource("CylinderMesh_CoreItem")
+
+[node name="SparkTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="Interactable" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] Repair Quacky (Scout Robot)"
+action_type = "repair_robot"
+target_identifier = "QUACKY"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("SphereShape3D_Interact")

@@ -1,0 +1,210 @@
+[gd_scene format=3 uid="uid://b2m8x1q9v7w4k"]
+
+[ext_resource type="Script" path="res://scripts/buildings/welcome_centre.gd" id="1_welcome"]
+[ext_resource type="PackedScene" path="res://scenes/robots/Petalo.tscn" id="2_petalo"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Cable.tscn" id="3_cable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/SignalNode.tscn" id="4_node"]
+[ext_resource type="PackedScene" path="res://scenes/objects/UnstableMachine.tscn" id="5_unstable"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Gate.tscn" id="6_gate"]
+[ext_resource type="PackedScene" path="res://scenes/objects/LevelTransition.tscn" id="7_trans"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ElectricBarrier.tscn" id="8_barrier"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.08, 0.1, 0.14, 1.0)
+metallic = 0.5
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_Wall"]
+albedo_color = Color(0.14, 0.18, 0.24, 1.0)
+metallic = 0.6
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_Pillar"]
+albedo_color = Color(0.06, 0.14, 0.22, 1.0)
+metallic = 0.8
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_Desk"]
+albedo_color = Color(0.05, 0.18, 0.28, 1.0)
+metallic = 0.7
+roughness = 0.3
+emission_enabled = true
+emission = Color(0, 0.6, 0.8, 1)
+emission_energy_multiplier = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_Floor"]
+material = SubResource("Mat_Floor")
+size = Vector3(36, 0.5, 48)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Floor"]
+size = Vector3(36, 0.5, 48)
+
+[sub_resource type="BoxMesh" id="BoxMesh_WallSide"]
+material = SubResource("Mat_Wall")
+size = Vector3(1, 8, 48)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_WallSide"]
+size = Vector3(1, 8, 48)
+
+
+[sub_resource type="BoxMesh" id="BoxMesh_WallBack"]
+material = SubResource("Mat_Wall")
+size = Vector3(36, 8, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_WallBack"]
+size = Vector3(36, 8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Desk"]
+material = SubResource("Mat_Desk")
+size = Vector3(6, 1.1, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Desk"]
+size = Vector3(6, 1.1, 2)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Pillar"]
+material = SubResource("Mat_Pillar")
+top_radius = 0.6
+bottom_radius = 0.6
+height = 8.0
+
+[node name="WelcomeCentre" type="Node3D"]
+script = ExtResource("1_welcome")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+collision_layer = 1
+collision_mask = 7
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_Floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_Floor")
+
+[node name="WallLeft" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4, 0)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallLeft"]
+mesh = SubResource("BoxMesh_WallSide")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallLeft"]
+shape = SubResource("BoxShape3D_WallSide")
+
+[node name="WallRight" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 4, 0)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallRight"]
+mesh = SubResource("BoxMesh_WallSide")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallRight"]
+shape = SubResource("BoxShape3D_WallSide")
+
+[node name="WallBack" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 21)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallBack"]
+mesh = SubResource("BoxMesh_WallBack")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallBack"]
+shape = SubResource("BoxShape3D_WallBack")
+
+[node name="ReceptionDesk" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 6)
+collision_layer = 4
+collision_mask = 3
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ReceptionDesk"]
+mesh = SubResource("BoxMesh_Desk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReceptionDesk"]
+shape = SubResource("BoxShape3D_Desk")
+
+[node name="Pillars" type="Node3D" parent="."]
+
+[node name="P1" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 4, -4)
+mesh = SubResource("CylinderMesh_Pillar")
+
+[node name="P2" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, -4)
+mesh = SubResource("CylinderMesh_Pillar")
+
+[node name="P3" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 4, 8)
+mesh = SubResource("CylinderMesh_Pillar")
+
+[node name="P4" type="MeshInstance3D" parent="Pillars"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 8)
+mesh = SubResource("CylinderMesh_Pillar")
+
+[node name="CeilingLights" type="Node3D" parent="."]
+
+[node name="Light1" type="OmniLight3D" parent="CeilingLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 8)
+light_color = Color(0.4, 0.7, 1, 1)
+light_energy = 0.8
+omni_range = 14.0
+
+[node name="Light2" type="OmniLight3D" parent="CeilingLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, -6)
+light_color = Color(0.4, 0.7, 1, 1)
+light_energy = 0.8
+omni_range = 14.0
+
+[node name="Petalo" parent="." instance=ExtResource("2_petalo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 4)
+
+[node name="PowerCable1" parent="." instance=ExtResource("3_cable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 3)
+
+[node name="SignalNode1" parent="." instance=ExtResource("4_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -8)
+node_identifier = "Node Alpha"
+is_initially_hidden = true
+
+[node name="SignalNode2" parent="." instance=ExtResource("4_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+node_identifier = "Node Beta"
+is_initially_hidden = true
+
+[node name="SignalNode3" parent="." instance=ExtResource("4_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -8)
+node_identifier = "Node Gamma"
+is_initially_hidden = true
+
+[node name="UnstableGenerator" parent="." instance=ExtResource("5_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 2)
+machine_name = "Welcome Centre Substation"
+
+[node name="ExitGate" parent="." instance=ExtResource("6_gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -17.5)
+open_distance = 2.8
+
+[node name="LevelTransition" parent="." instance=ExtResource("7_trans")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.5)
+target_building = 1
+
+
+[node name="ElectricBarrier1" parent="." instance=ExtResource("8_barrier")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -10, 0, 0)
+
+[node name="FallenGirder" type="StaticBody3D" parent="."]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 6, 0.4, -4)
+collision_layer = 4
+collision_mask = 3
+
+[node name="GirderMesh" type="MeshInstance3D" parent="FallenGirder"]
+mesh = SubResource("BoxMesh_Desk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FallenGirder"]
+shape = SubResource("BoxShape3D_Desk")
+
+[node name="SecondaryHazard" parent="." instance=ExtResource("5_unstable")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 8)
+machine_name = "Auxiliary Turbine"

@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://c3m7x5v9q2w4b"]
+
+[ext_resource type="Script" path="res://scripts/objects/unstable_machine.gd" id="1_unstable"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Base"]
+albedo_color = Color(0.15, 0.15, 0.18, 1.0)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_HazardArm"]
+albedo_color = Color(1.0, 0.4, 0.0, 1.0)
+emission_enabled = true
+emission = Color(1.0, 0.3, 0.0, 1.0)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_Console"]
+albedo_color = Color(0.1, 0.2, 0.3, 1.0)
+metallic = 0.7
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.0, 0.8, 1.0, 1.0)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Base"]
+material = SubResource("Mat_Base")
+top_radius = 0.7
+bottom_radius = 0.9
+height = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_Arm"]
+material = SubResource("Mat_HazardArm")
+size = Vector3(3.0, 0.22, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Hazard"]
+size = Vector3(3.0, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Console"]
+material = SubResource("Mat_Console")
+size = Vector3(1.2, 1.0, 0.6)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.6
+
+[node name="UnstableMachine" type="Node3D"]
+script = ExtResource("1_unstable")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_Base")
+
+[node name="Rotor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Rotor"]
+mesh = SubResource("BoxMesh_Arm")
+
+[node name="HazardArea" type="Area3D" parent="Rotor"]
+collision_layer = 4
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Rotor/HazardArea"]
+shape = SubResource("BoxShape3D_Hazard")
+
+[node name="ControlTerminal" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.8)
+mesh = SubResource("BoxMesh_Console")
+
+[node name="WarningLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+light_color = Color(1, 0.35, 0, 1)
+light_energy = 2.2
+omni_range = 8.0
+
+[node name="Interactable" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 1.8)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] Stabilize Malfunctioning Generator"
+action_type = "stabilize_machine"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactable"]
+shape = SubResource("SphereShape3D_Interact")

@@ -1,0 +1,158 @@
+[gd_scene format=3 uid="uid://e4n7m2k9q8v6x"]
+
+[ext_resource type="Script" path="res://scripts/robots/tiko.gd" id="1_tiko"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tiko"]
+size = Vector3(1.2, 0.6, 2.2)
+
+[sub_resource type="StandardMaterial3D" id="Mat_WhiteCard"]
+albedo_color = Color(0.95, 0.94, 0.92, 1.0)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Mat_OrangeEdge"]
+albedo_color = Color(0.95, 0.48, 0.08, 1.0)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_SpringLegs"]
+albedo_color = Color(0.85, 0.88, 0.9, 1.0)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_TikoGreen"]
+albedo_color = Color(0.2, 0.95, 0.4, 1.0)
+emission_enabled = true
+emission = Color(0.2, 0.95, 0.4, 1.0)
+emission_energy_multiplier = 1.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_HeadBody"]
+material = SubResource("Mat_WhiteCard")
+size = Vector3(0.65, 0.26, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_BodyTrim"]
+material = SubResource("Mat_OrangeEdge")
+size = Vector3(0.67, 0.03, 0.57)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Segment1"]
+material = SubResource("Mat_WhiteCard")
+size = Vector3(0.48, 0.22, 0.38)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Segment2"]
+material = SubResource("Mat_WhiteCard")
+size = Vector3(0.38, 0.18, 0.32)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Segment3"]
+material = SubResource("Mat_WhiteCard")
+size = Vector3(0.28, 0.15, 0.28)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Segment4"]
+material = SubResource("Mat_WhiteCard")
+size = Vector3(0.18, 0.12, 0.24)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_SpringLeg"]
+material = SubResource("Mat_SpringLegs")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_FrontProng"]
+material = SubResource("Mat_OrangeEdge")
+size = Vector3(0.08, 0.08, 0.25)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.2
+
+[node name="Tiko" type="CharacterBody3D" groups=["robots"]]
+collision_layer = 1
+collision_mask = 7
+script = ExtResource("1_tiko")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0.2)
+shape = SubResource("BoxShape3D_tiko")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+
+[node name="MainCab" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.4)
+mesh = SubResource("BoxMesh_HeadBody")
+
+[node name="CabTrim" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, -0.4)
+mesh = SubResource("BoxMesh_BodyTrim")
+
+[node name="ProngLeft" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -0.25, 0.18, -0.7)
+mesh = SubResource("BoxMesh_FrontProng")
+
+[node name="ProngRight" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 0.25, 0.18, -0.7)
+mesh = SubResource("BoxMesh_FrontProng")
+
+[node name="Segment1" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0.05)
+mesh = SubResource("BoxMesh_Segment1")
+
+[node name="Segment2" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, 0.42)
+mesh = SubResource("BoxMesh_Segment2")
+
+[node name="Segment3" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0.74)
+mesh = SubResource("BoxMesh_Segment3")
+
+[node name="Segment4" type="MeshInstance3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 1.02)
+mesh = SubResource("BoxMesh_Segment4")
+
+[node name="LegsLeft" type="Node3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.36, 0.15, 0)
+
+[node name="L1" type="MeshInstance3D" parent="VisualRoot/LegsLeft"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.12, 0, -0.45)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="L2" type="MeshInstance3D" parent="VisualRoot/LegsLeft"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.12, 0, -0.25)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="L3" type="MeshInstance3D" parent="VisualRoot/LegsLeft"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.12, 0, -0.05)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="LegsRight" type="Node3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36, 0.15, 0)
+
+[node name="R1" type="MeshInstance3D" parent="VisualRoot/LegsRight"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.12, 0, -0.45)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="R2" type="MeshInstance3D" parent="VisualRoot/LegsRight"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.12, 0, -0.25)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="R3" type="MeshInstance3D" parent="VisualRoot/LegsRight"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.12, 0, -0.05)
+mesh = SubResource("CylinderMesh_SpringLeg")
+
+[node name="StatusLight" type="OmniLight3D" parent="VisualRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.3)
+light_color = Color(0.2, 0.95, 0.4, 1)
+light_energy = 1.8
+omni_range = 5.5
+
+[node name="SparkTimer" type="Timer" parent="."]
+wait_time = 2.4
+autostart = true
+
+[node name="Interactable" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] Repair Tiko (Heavy Robot)"
+action_type = "repair_robot"
+target_identifier = "TIKO"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("SphereShape3D_Interact")

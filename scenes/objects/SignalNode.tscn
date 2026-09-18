@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://c7m2x9q4v1w8p"]
+
+[ext_resource type="Script" path="res://scripts/objects/signal_node.gd" id="1_node"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Pylon"]
+albedo_color = Color(0.18, 0.22, 0.28, 1.0)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_Pylon"]
+material = SubResource("Mat_Pylon")
+top_radius = 0.2
+bottom_radius = 0.35
+height = 1.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_Core"]
+radius = 0.22
+height = 0.44
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 2.0
+
+[node name="SignalNode" type="Node3D"]
+script = ExtResource("1_node")
+
+[node name="PylonMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("CylinderMesh_Pylon")
+
+[node name="CoreMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("SphereMesh_Core")
+
+[node name="BeamLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+light_color = Color(0, 0.9, 1, 1)
+light_energy = 1.2
+omni_range = 6.0
+
+[node name="Interactable" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] Activate Signal Node"
+action_type = "activate_node"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("SphereShape3D_Interact")

@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://b6m9x4v2q1w7k"]
+
+[ext_resource type="Script" path="res://scripts/objects/gate.gd" id="1_gate"]
+[ext_resource type="Script" path="res://scripts/interaction/interactable.gd" id="2_interactable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Frame"]
+albedo_color = Color(0.12, 0.15, 0.2, 1.0)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_Door"]
+albedo_color = Color(0.2, 0.26, 0.35, 1.0)
+metallic = 0.7
+roughness = 0.25
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_Door"]
+size = Vector3(2.4, 4.0, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_FrameTop"]
+material = SubResource("Mat_Frame")
+size = Vector3(5.6, 0.6, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_FramePost"]
+material = SubResource("Mat_Frame")
+size = Vector3(0.6, 4.2, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_Panel"]
+material = SubResource("Mat_Door")
+size = Vector3(2.4, 4.0, 0.35)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_Interact"]
+radius = 3.0
+
+[node name="Gate" type="Node3D"]
+script = ExtResource("1_gate")
+
+[node name="FrameTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+mesh = SubResource("BoxMesh_FrameTop")
+
+[node name="FrameLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 2.1, 0)
+mesh = SubResource("BoxMesh_FramePost")
+
+[node name="FrameRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6, 2.1, 0)
+mesh = SubResource("BoxMesh_FramePost")
+
+[node name="DoorLeft" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 2.0, 0)
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorLeft"]
+shape = SubResource("BoxShape3D_Door")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorLeft"]
+mesh = SubResource("BoxMesh_Panel")
+
+[node name="DoorRight" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 2.0, 0)
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorRight"]
+shape = SubResource("BoxShape3D_Door")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DoorRight"]
+mesh = SubResource("BoxMesh_Panel")
+
+[node name="StatusLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0.5)
+light_color = Color(1, 0.2, 0.2, 1)
+light_energy = 2.0
+omni_range = 6.0
+
+[node name="Interactable" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_interactable")
+prompt_message = "[E] Open Security Gate"
+action_type = "gate"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("SphereShape3D_Interact")
