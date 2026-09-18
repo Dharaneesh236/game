@@ -1,4 +1,4 @@
-name: Export and Deploy to itch.io
+name: Export Godot Web and Deploy to Vercel
 
 on:
   push:
@@ -10,10 +10,12 @@ env:
   GODOT_RELEASE: "stable"
   EXPORT_NAME: "Web"
   BUILD_DIR: "build/web"
+  VERCEL_ORG_ID: "team_e0QhE1GVQTU3jNAG9T2HPlTW"
+  VERCEL_PROJECT_ID: "prj_5J638QLZHnTzTHurrzrqNWSWA7o4"
 
 jobs:
   export-and-deploy:
-    name: Export Godot Web and Push to itch.io
+    name: Export Godot Web and Deploy to Vercel
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +38,6 @@ jobs:
           unzip -q godot.zip
           mv "Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}_linux.x86_64" /usr/local/bin/godot
           chmod +x /usr/local/bin/godot
-          echo "Godot version:"
           godot --version
 
       - name: Download Export Templates
@@ -47,7 +48,6 @@ jobs:
           unzip -q templates.tpz
           mv templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.${{ env.GODOT_RELEASE }}/
           rm -rf templates templates.tpz
-          echo "Templates installed:"
           ls ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.${{ env.GODOT_RELEASE }}/ | grep web
 
       - name: Create build directory
@@ -56,18 +56,18 @@ jobs:
       - name: Export game as Web
         run: |
           godot --headless --export-release "${{ env.EXPORT_NAME }}" "${{ env.BUILD_DIR }}/index.html" 2>&1
-          echo "Build contents:"
+          echo "--- Build output ---"
           ls -lh ${{ env.BUILD_DIR }}
 
       - name: Install Vercel CLI
         run: npm install -g vercel
 
+      - name: Pull Vercel project settings
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           vercel deploy ${{ env.BUILD_DIR }} \
-            --token=$VERCEL_TOKEN \
+            --token=${{ secrets.VERCEL_TOKEN }} \
             --prod \
-            --yes \
-            --name=roboverse-the-last-signal
+            --yes
