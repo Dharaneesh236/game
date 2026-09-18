@@ -5,6 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_RELEASE: "stable"
+  EXPORT_NAME: "Web"
+  BUILD_DIR: "build/web"
+
 jobs:
   export-and-deploy:
     name: Export Godot Web and Push to itch.io
@@ -13,27 +19,55 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates
+        uses: actions/cache@v4
+        id: cache-godot
         with:
-          lfs: true
+          path: |
+            ~/.local/share/godot
+            /usr/local/bin/godot
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}
 
-      - name: Export Godot Web build
-        id: export
-        uses: firebelley/godot-export@v8.0.0
-        with:
-          godot_executable_download_url: https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
-          godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz
-          relative_project_path: ./
-          archive_output: false
-          cache: true
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          wget -q "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}_linux.x86_64.zip" -O godot.zip
+          unzip -q godot.zip
+          mv "Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+          echo "Godot version:"
+          godot --version
 
-      - name: List build output
-        run: find ${{ steps.export.outputs.build_directory }} -type f | head -30
+      - name: Download Export Templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.${{ env.GODOT_RELEASE }}
+          wget -q "https://github.com/godotengine/godot/releases/download/${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}/Godot_v${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}_export_templates.tpz" -O templates.tpz
+          unzip -q templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.${{ env.GODOT_RELEASE }}/
+          rm -rf templates templates.tpz
+          echo "Templates installed:"
+          ls ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.${{ env.GODOT_RELEASE }}/ | grep web
 
-      - name: Push to itch.io via Butler
-        uses: manleydev/butler-publish-itchio-action@master
+      - name: Create build directory
+        run: mkdir -p ${{ env.BUILD_DIR }}
+
+      - name: Export game as Web
+        run: |
+          godot --headless --export-release "${{ env.EXPORT_NAME }}" "${{ env.BUILD_DIR }}/index.html" 2>&1
+          echo "Build contents:"
+          ls -lh ${{ env.BUILD_DIR }}
+
+      - name: Install Butler
+        run: |
+          wget -q "https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default" -O butler.zip
+          unzip -q butler.zip
+          chmod +x butler
+          ./butler version
+
+      - name: Push to itch.io
         env:
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: html5
-          ITCH_GAME: roboverse-the-last-signal
-          ITCH_USER: dharanee236
-          PACKAGE: ${{ steps.export.outputs.build_directory }}/Web
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        run: |
+          ./butler push ${{ env.BUILD_DIR }} dharanee236/roboverse-the-last-signal:html5 --userversion "${{ github.run_number }}"
